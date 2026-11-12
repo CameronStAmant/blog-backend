@@ -18,7 +18,18 @@ export const post = pgTable("posts", {
     .notNull(),
 });
 
-const relations = defineRelations({ user, post }, (r) => ({
+export const comment = pgTable("comments", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  body: varchar({ length: 10000 }).notNull(),
+  postId: integer("post_id")
+    .references(() => post.id)
+    .notNull(),
+  authorId: integer("author_id")
+    .references(() => user.id)
+    .notNull(),
+});
+
+const relations = defineRelations({ user, post, comment }, (r) => ({
   post: {
     author: r.one.user({
       from: r.post.authorId,
@@ -27,6 +38,16 @@ const relations = defineRelations({ user, post }, (r) => ({
   },
   user: {
     posts: r.many.post(),
+  },
+  comment: {
+    author: r.one.user({
+      from: r.comment.authorId,
+      to: r.user.id,
+    }),
+    post: r.one.post({
+      from: r.comment.postId,
+      to: r.post.id,
+    }),
   },
 }));
 
