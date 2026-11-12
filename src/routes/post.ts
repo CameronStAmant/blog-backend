@@ -29,4 +29,13 @@ const postValidation = [
 ];
 router.post("/", postValidation, postController.createPosts);
 
+const deleteValidation = [
+  body("ids")
+    .notEmpty()
+    .withMessage("Please provide the array of IDs to delete.")
+    .isArray()
+    .withMessage("Please provide the array of IDs to delete."),
+];
+router.delete("/", deleteValidation, postController.deletePosts);
+
 export default router;
