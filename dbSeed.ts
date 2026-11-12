@@ -1,4 +1,4 @@
-import { users as usersTable } from "./src/db/schema";
+import { user as usersTable, post as postsTable } from "./src/db/schema";
 import db from "./src/db/schema";
 import { eq } from "drizzle-orm";
 
@@ -10,10 +10,18 @@ const main = async () => {
   };
 
   await db.insert(usersTable).values(user);
-  console.log("New user created!");
 
-  const users = await db.select().from(usersTable);
-  console.log("Getting all users from the database: ", users);
+  const newUser = (
+    await db.select().from(usersTable).where(eq(usersTable.email, user.email))
+  )[0];
+
+  const post: typeof postsTable.$inferInsert = {
+    title: "PostTitle",
+    body: "PostBody",
+    authorId: newUser.id,
+  };
+
+  await db.insert(postsTable).values(post);
 
   await db
     .update(usersTable)
@@ -22,10 +30,8 @@ const main = async () => {
     })
     .where(eq(usersTable.lastName, user.lastName));
 
-  console.log("User info updated!");
-
+  await db.delete(postsTable).where(eq(postsTable.authorId, newUser.id));
   await db.delete(usersTable).where(eq(usersTable.email, user.email));
-  console.log("User deleted!");
 };
 
 export default main;
