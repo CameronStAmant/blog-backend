@@ -14,6 +14,7 @@ export const user = pgTable("users", {
   lastName: varchar("last_name", { length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
   password: varchar().notNull(),
+  isAdmin: boolean().default(false).notNull(),
 });
 
 export const post = pgTable("posts", {

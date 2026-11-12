@@ -11,6 +11,7 @@ const main = async () => {
     firstName: "John",
     lastName: "Smith",
     email: `${crypto.randomUUID()}@example.com`,
+    password: "password",
   };
 
   await db.insert(usersTable).values(user);
