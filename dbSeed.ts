@@ -1,9 +1,8 @@
-import {
+import db, {
   user as usersTable,
   post as postsTable,
   comment as commentsTable,
 } from "./src/db/schema";
-import db from "./src/db/schema";
 import { eq } from "drizzle-orm";
 
 const main = async () => {
